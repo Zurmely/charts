@@ -1,0 +1,43 @@
+:root {
+  --paper: #f7f3ea;
+  --ink: #1b2733;
+  --ink-soft: #5b6b7b;
+  --line: #d8d2c4;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 24px 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.site-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.site-nav a:hover { color: var(--ink); }
+
+.site-nav .brand {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin-right: 8px;
+}
+
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.home-blank {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--paper);
+}
