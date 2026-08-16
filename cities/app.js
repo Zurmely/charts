@@ -22,7 +22,7 @@ const QUADRANTS = [
 ];
 
 const state = {
-  hidden: new Set(),
+  shown: new Set(),
   labels: "auto",
   selected: null,
   hovered: null,
@@ -37,7 +37,7 @@ const suggestionsEl = document.getElementById("suggestions");
 
 const idOf = c => `${c.city}|${c.country}`;
 const quadrantOf = c => (c.y >= 50 ? (c.x >= 50 ? "premium" : "best") : (c.x >= 50 ? "bad" : "budget"));
-const visibleCities = () => CITY_DATA.filter(c => !state.hidden.has(c.continent));
+const visibleCities = () => CITY_DATA.filter(c => !state.shown.size || state.shown.has(c.continent));
 
 const el = (tag, attrs = {}, text) => {
   const node = document.createElementNS(SVG_NS, tag);
@@ -291,15 +291,30 @@ function buildLegend() {
     btn.dataset.continent = name;
     btn.innerHTML = `<span class="swatch" style="background:${color}"></span>${name} <span class="count">${n}</span>`;
     if (n === 0) btn.disabled = true;
+    btn.setAttribute("aria-pressed", "false");
     btn.addEventListener("click", () => {
-      state.hidden.has(name) ? state.hidden.delete(name) : state.hidden.add(name);
-      if (state.selected && state.hidden.has(state.selected.continent)) select(null);
-      btn.classList.toggle("off", state.hidden.has(name));
+      if (!state.shown.size) {
+        state.shown.add(name);
+      } else if (state.shown.has(name)) {
+        state.shown.delete(name);
+      } else {
+        state.shown.add(name);
+      }
+      if (state.selected && state.shown.size && !state.shown.has(state.selected.continent)) select(null);
+      syncLegend();
       buildBoards();
       render();
     });
     legend.append(btn);
   }
+}
+
+function syncLegend() {
+  document.querySelectorAll(".legend button").forEach(btn => {
+    const on = !state.shown.size || state.shown.has(btn.dataset.continent);
+    btn.classList.toggle("off", !on);
+    btn.setAttribute("aria-pressed", String(Boolean(state.shown.size) && on));
+  });
 }
 
 /* ---------------- boards ---------------- */
@@ -370,12 +385,12 @@ document.querySelectorAll("[data-labels]").forEach(btn => {
 });
 
 document.getElementById("reset").addEventListener("click", () => {
-  state.hidden.clear();
+  state.shown.clear();
   state.selected = null;
   state.hovered = null;
   searchEl.value = "";
   suggestionsEl.hidden = true;
-  document.querySelectorAll(".legend button").forEach(b => b.classList.remove("off"));
+  syncLegend();
   hideTooltip();
   buildBoards();
   render();
