@@ -296,7 +296,7 @@ function buildLegend() {
       if (!state.shown.size) {
         state.shown.add(name);
       } else if (state.shown.has(name)) {
-        state.shown.delete(name);
+        if (state.shown.size > 1) state.shown.delete(name);
       } else {
         state.shown.add(name);
       }
