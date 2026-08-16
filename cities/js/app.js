@@ -14,6 +14,8 @@ const CONTINENTS = [
 ];
 
 const COLOR = Object.fromEntries(CONTINENTS.map(c => [c.name, c.color]));
+const MONO = "#4a5b6a";
+const colorOf = c => state.mono ? MONO : (COLOR[c.continent] || "#888");
 
 const QUADRANTS = [
   { key: "best",    title: "BEST VALUE",    sub: "High quality, low cost",       color: "var(--q-best)",    fill: "#7fa86b", x: "left",  y: "top" },
@@ -25,6 +27,7 @@ const QUADRANTS = [
 const state = {
   shown: new Set(),
   labels: "auto",
+  mono: false,
   selected: null,
   hovered: null,
 };
@@ -148,7 +151,7 @@ function render() {
     const dot = el("circle", {
       class: `dot${focus && !isFocus ? " dim" : ""}${isFocus ? " hit" : ""}`,
       cx, cy, r: isFocus ? r + 2.5 : r,
-      fill: COLOR[c.continent] || "#888",
+      fill: colorOf(c),
     });
     const baseR = isFocus ? r + 2.5 : r;
     dot.addEventListener("mouseenter", () => setHover(c, dot, baseR, isFocus));
@@ -240,7 +243,7 @@ function showTooltip(c) {
   const q = QUADRANTS.find(q => q.key === quadrantOf(c));
   const place = [c.region, c.country].filter(Boolean).join(", ");
   tooltipEl.innerHTML = `
-    <h3><span style="width:10px;height:10px;border-radius:50%;background:${COLOR[c.continent]};display:inline-block"></span>${c.city}</h3>
+    <h3><span style="width:10px;height:10px;border-radius:50%;background:${colorOf(c)};display:inline-block"></span>${c.city}</h3>
     <p class="place">${place} · ${c.continent}</p>
     <dl>
       <dt>Cost of living</dt><dd>${c.x.toFixed(0)}<span style="color:var(--ink-soft);font-weight:400">th pct</span></dd>
@@ -340,7 +343,7 @@ function buildBoards() {
     items.forEach((c, i) => {
       const li = document.createElement("li");
       li.innerHTML = `<span class="rank">${i + 1}</span>
-        <span class="swatch" style="width:9px;height:9px;border-radius:50%;background:${COLOR[c.continent]};display:inline-block"></span>
+        <span class="swatch" style="width:9px;height:9px;border-radius:50%;background:${colorOf(c)};display:inline-block"></span>
         <span class="name">${c.city}</span><span class="num">${board.num(c)}</span>`;
       li.addEventListener("click", () => select(c));
       ol.append(li);
@@ -385,10 +388,21 @@ document.querySelectorAll("[data-labels]").forEach(btn => {
   });
 });
 
+document.querySelectorAll("[data-color]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    state.mono = btn.dataset.color === "mono";
+    document.querySelectorAll("[data-color]").forEach(b => b.classList.toggle("on", b === btn));
+    buildBoards();
+    render();
+  });
+});
+
 document.getElementById("reset").addEventListener("click", () => {
   state.shown.clear();
+  state.mono = false;
   state.selected = null;
   state.hovered = null;
+  document.querySelectorAll("[data-color]").forEach(b => b.classList.toggle("on", b.dataset.color === "region"));
   searchEl.value = "";
   suggestionsEl.hidden = true;
   syncLegend();
