@@ -5,6 +5,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const CONTINENTS = [
   { name: "Europe",        color: "#2f5d8f" },
   { name: "Asia",          color: "#7b52ab" },
+  { name: "Middle East",   color: "#be8a2f" },
   { name: "Africa",        color: "#e08a3c" },
   { name: "North America", color: "#b23b3b" },
   { name: "South America", color: "#2e8b6f" },
