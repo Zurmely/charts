@@ -12,7 +12,7 @@ The home page is blank on purpose. Charts live under their own slugs:
 
 A quadrant dashboard of 306 cities from
 [Numbeo's current Quality of Life rankings](https://www.numbeo.com/quality-of-life/rankings_current.jsp).
-Originally made by [Vale Mel](https://www.linkedin.com/in/valemel/). Both axes are percentile ranks. Quality of life uses Numbeo's formula with its
+Originally made by [Valerii Emelianov](https://www.linkedin.com/in/valemel/). Both axes are percentile ranks. Quality of life uses Numbeo's formula with its
 price-linked terms (purchasing power and property-price-to-income) removed,
 leaving safety, healthcare, traffic, pollution, and climate.
 
